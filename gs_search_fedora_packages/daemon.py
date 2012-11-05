@@ -49,7 +49,6 @@ class SearchFedoraPackagesService(dbus.service.Object):
 
     """
     bus_name = 'org.fedoraproject.fedorapackages.search'
-    msg_received_signal = bus_name + '.MessageReceived'
     enabled = False
 
     http_prefix = "https://apps.fedoraproject.org/packages"
