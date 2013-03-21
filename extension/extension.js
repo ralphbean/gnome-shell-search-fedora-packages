@@ -21,9 +21,6 @@ const Prefs = Me.imports.prefs;
 const MAX_SEARCH_RESULTS_COLUMNS = 2
 const ICON_SIZE = 120;
 
-const packages_DOMAIN = "packages.org";
-const packages_API_URL = "/w/api.php";
-
 const shell_version = imports.misc.config.PACKAGE_VERSION;
 const settings = Convenience.getSettings();
 
@@ -135,30 +132,6 @@ function run_wiki_search(text) {
     else {
         Main.overview._searchEntry.set_text(search_text);
     }
-}
-
-function add_wiki_keybindings() {
-    global.display.add_keybinding(
-        Prefs.PACKAGES_SEARCH_FROM_CLIPBOARD,
-        settings,
-        Meta.KeyBindingFlags.NONE,
-        Lang.bind(this, function() {
-            search_from_clipborad();
-        })
-    );
-    global.display.add_keybinding(
-        Prefs.PACKAGES_SEARCH_FROM_PRIMARY_SELECTION,
-        settings,
-        Meta.KeyBindingFlags.NONE,
-        Lang.bind(this, function() {
-            search_from_primary_selection();
-        })
-    );
-}
-
-function remove_wiki_keybindings() {
-    global.display.remove_keybinding(Prefs.PACKAGES_SEARCH_FROM_CLIPBOARD);
-    global.display.remove_keybinding(Prefs.PACKAGES_SEARCH_FROM_PRIMARY_SELECTION);
 }
 
 const packagesResultActor = new Lang.Class({
@@ -543,20 +516,6 @@ function enable() {
     packagesProvider = new packagesProvider('packages');
     Main.overview.addSearchProvider(packagesProvider);
 
-    if(settings.get_boolean(Prefs.PACKAGES_ENABLE_SHORTCUTS)) {
-        add_wiki_keybindings();
-    }
-
-    settings_connection_id = settings.connect(
-        'changed::'+Prefs.PACKAGES_ENABLE_SHORTCUTS,
-        function() {
-            let enable = settings.get_boolean(Prefs.PACKAGES_ENABLE_SHORTCUTS);
-
-            if(enable) add_wiki_keybindings();
-            else remove_wiki_keybindings();
-        }
-    );
-
     if(starts_with(shell_version, '3.6')) {
         let search_results = Main.overview._viewSelector._searchResults;
         let provider_meta = search_results._metaForProvider(packagesProvider);
@@ -580,9 +539,5 @@ function disable() {
 
     if(settings_connection_id > 0) {
         settings.disconnect(settings_connection_id);
-    }
-
-    if(settings.get_boolean(Prefs.PACKAGES_ENABLE_SHORTCUTS)) {
-        remove_wiki_keybindings();
     }
 }
