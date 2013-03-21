@@ -22,8 +22,11 @@
 # Copyright (C) 2012 Red Hat, Inc.
 # Author: Luke Macken <lmacken@redhat.com>
 
+from twisted.internet import gtk3reactor
+gtk3reactor.install()
+from twisted.internet import reactor
+
 import dbus
-import dbus.glib
 import dbus.service
 import os
 import pkgwat.api
@@ -32,7 +35,6 @@ import urllib
 import webbrowser
 
 from gi.repository import Gio
-import gobject
 
 
 # Convenience shorthand for declaring dbus interface methods.
@@ -43,13 +45,8 @@ sbn = dict(dbus_interface=search_bus_name)
 
 class SearchFedoraPackagesService(dbus.service.Object):
     """ The FedoraPackages Search Daemon.
-
-    This service is started through DBus activation by calling the
-    :meth:`Enable` method, and stopped with :meth:`Disable`.
-
     """
     bus_name = 'org.fedoraproject.fedorapackages.search'
-    enabled = False
 
     http_prefix = "https://apps.fedoraproject.org/packages"
     icon_tmpl = "https://apps.fedoraproject.org/packages/images/icons/%s.png"
@@ -62,6 +59,7 @@ class SearchFedoraPackagesService(dbus.service.Object):
     __name__ = "SearchFedoraPackagesService"
 
     def __init__(self):
+        print "Constructing"
         self.settings = Gio.Settings.new(self.bus_name)
         if not self.settings.get_boolean('enabled'):
             return
@@ -70,31 +68,35 @@ class SearchFedoraPackagesService(dbus.service.Object):
         bus_name = dbus.service.BusName(self.bus_name, bus=self.session_bus)
         dbus.service.Object.__init__(self, bus_name, self._object_path)
         self._initialize_icon_cache()
-        self.enabled = True
 
     @dbus.service.method(in_signature='s', **sbn)
     def ActivateResult(self, search_id):
         webbrowser.open(self.http_prefix + "/" + search_id.split(':')[0])
+        reactor.callLater(0.1, reactor.stop)
 
     @dbus.service.method(in_signature='as', out_signature='as', **sbn)
     def GetInitialResultSet(self, terms):
-        return self._basic_search(terms)
+        results = self._basic_search(terms)
+        reactor.callLater(0.1, reactor.stop)
+        return results
 
     @dbus.service.method(in_signature='as', out_signature='aa{sv}', **sbn)
     def GetResultMetas(self, ids):
-        for id in ids:
-            print id, id.split(":")
-        return [
+        results = [
             dict(
                 id=id,
                 name=id.split(":")[0],
                 gicon=self.iconify(id.split(":")[-1]),
             ) for id in ids
         ]
+        reactor.callLater(0.1, reactor.stop)
+        return results
 
     @dbus.service.method(in_signature='asas', out_signature='as', **sbn)
     def GetSubsearchResultSet(self, previous_results, new_terms):
-        return self._basic_search(new_terms)
+        results = self._basic_search(new_terms)
+        reactor.callLater(0.1, reactor.stop)
+        return results
 
     def iconify(self, filetoken):
         filename = self._icon_cache.get(filetoken)
@@ -132,8 +134,7 @@ class SearchFedoraPackagesService(dbus.service.Object):
 
 def main():
     service = SearchFedoraPackagesService()
-    loop = gobject.MainLoop()
-    loop.run()
+    reactor.run()
 
 if __name__ == '__main__':
     main()
