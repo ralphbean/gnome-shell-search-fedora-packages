@@ -6,5 +6,10 @@
       <summary>fedora-packages search enabled</summary>
       <description>Whether or not gnome-shell search should return results from the Fedora Packages webapp</description>
     </key>
+    <key type="s" name="keyword">
+      <default>"fp:"</default>
+      <summary>Search keyword</summary>
+      <description>Searches must be prefixed with this before making a query to the Fedora Packages webapp over the network</description>
+    </key>
   </schema>
 </schemalist>
