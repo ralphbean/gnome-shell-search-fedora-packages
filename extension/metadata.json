@@ -1,1 +1,1 @@
-{"shell-version": ["3.6.3.1"], "uuid": "fedora-packages-search-provider@threebean.org", "name": "Fedora Packages Search Provider", "description": "Search the Fedora Packages webapp from the gnome shell", "settings-schema": "org.fedoraproject.gnome.shell.extensions.packages-search-provider"}
+{"shell-version": ["3.6.3.1"], "uuid": "fedora-packages-search-provider@threebean.org", "name": "Fedora Packages Search Provider", "description": "Search the Fedora Packages webapp from the gnome shell", "settings-schema": "org.fedoraproject.fedorapackages.search"}
