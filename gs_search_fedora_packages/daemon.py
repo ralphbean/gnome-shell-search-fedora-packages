@@ -131,7 +131,7 @@ class SearchFedoraPackagesService(dbus.service.Object):
             self._icon_cache[filename[:-4]] = self._icon_cache_dir + filename
 
     def _basic_search(self, terms):
-        keyword = str(self.settings.get_value('keyword'))
+        keyword = str(self.settings.get_value('keyword'))[1:-1]
         term = ''.join(terms).strip().encode('utf-8')
         if not term.startswith(keyword):
             return []
