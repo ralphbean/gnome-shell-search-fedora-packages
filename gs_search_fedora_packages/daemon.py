@@ -29,10 +29,12 @@ from twisted.internet import reactor
 import dbus
 import dbus.glib
 import dbus.service
+
 import os
 import time
 import hashlib
 import shelve
+
 import pkgwat.api
 import requests
 import urllib
