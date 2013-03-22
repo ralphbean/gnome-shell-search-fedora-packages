@@ -30,6 +30,8 @@ import dbus
 import dbus.glib
 import dbus.service
 import os
+import hashlib
+import shelve
 import pkgwat.api
 import requests
 import urllib
@@ -53,8 +55,9 @@ class SearchFedoraPackagesService(dbus.service.Object):
     icon_tmpl = "https://apps.fedoraproject.org/packages/images/icons/%s.png"
 
     _icon_cache = {}
-    _icon_cache_dir = os.path.expanduser("~/.cache/search-fedora-packages/")
-    _search_cache = {}
+    _cache_dir = os.path.expanduser("~/.cache/search-fedora-packages/")
+    _icon_cache_dir = os.path.expanduser(_cache_dir + "icons/")
+    _search_cache_dir = os.path.expanduser(_cache_dir + "search/")
 
     _object_path = '/%s' % bus_name.replace('.', '/')
     __name__ = "SearchFedoraPackagesService"
@@ -122,15 +125,26 @@ class SearchFedoraPackagesService(dbus.service.Object):
             self._icon_cache[filename[:-4]] = self._icon_cache_dir + filename
 
     def _basic_search(self, terms):
-        term = ''.join(terms)
+        term = ''.join(terms).strip().encode('utf-8')
 
-        if not term in self._search_cache:
-            response = pkgwat.api.search(term)
-            rows = response.get('rows', [])
-            rows = [row.get('name') + ":" + row.get('icon') for row in rows]
-            self._search_cache[term] = rows
+        key = hashlib.md5(term).hexdigest()
+        location = self._search_cache_dir + key[0:2] + "/" + key[2:4]
 
-        return self._search_cache[term]
+        if not os.path.isdir(location):
+            os.makedirs(location)
+
+        d = shelve.open(location + "/" + key[4:6])
+
+        try:
+            if not term in d:
+                response = pkgwat.api.search(term)
+                rows = response.get('rows', [])
+                rows = [row.get('name') + ":" + row.get('icon')
+                        for row in rows]
+                d[term] = rows
+            return d[term]
+        finally:
+            d.close()
 
 
 def main():
