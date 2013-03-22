@@ -148,7 +148,7 @@ class SearchFedoraPackagesService(dbus.service.Object):
                 rows = [row.get('name') + ":" + row.get('icon')
                         for row in rows]
                 d[term] = (time.time(), rows)
-            return d[term]
+            return d[term][1]
         finally:
             d.close()
 
