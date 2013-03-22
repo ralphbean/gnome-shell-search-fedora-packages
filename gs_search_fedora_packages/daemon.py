@@ -68,7 +68,6 @@ class SearchFedoraPackagesService(dbus.service.Object):
     __name__ = "SearchFedoraPackagesService"
 
     def __init__(self):
-        print "Constructing"
         self.settings = Gio.Settings.new(self.bus_name)
         if not self.settings.get_boolean('enabled'):
             return
@@ -136,6 +135,8 @@ class SearchFedoraPackagesService(dbus.service.Object):
         term = ''.join(terms).strip().encode('utf-8')
         if not term.startswith(keyword):
             return []
+
+        term = term[len(keyword):]
 
         key = hashlib.md5(term).hexdigest()
         location = self._search_cache_dir + key[0:2] + "/" + key[2:4]
