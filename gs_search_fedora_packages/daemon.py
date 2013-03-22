@@ -14,7 +14,7 @@
 # along with search-fedorapackages.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-# Copyright (C) 2012 Red Hat, Inc.
+# Copyright (C) 2012-2013 Red Hat, Inc.
 # Author: Ralph Bean <rbean@redhat.com>
 
 
