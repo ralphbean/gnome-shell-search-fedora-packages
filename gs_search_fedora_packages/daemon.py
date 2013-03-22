@@ -27,6 +27,7 @@ gtk3reactor.install()
 from twisted.internet import reactor
 
 import dbus
+import dbus.glib
 import dbus.service
 import os
 import pkgwat.api
