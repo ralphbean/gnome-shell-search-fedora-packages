@@ -4,3 +4,4 @@ dist
 *.pyo
 *.sw*
 build
+extension/schemas/*.compiled

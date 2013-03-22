@@ -18,22 +18,7 @@ const Convenience = Me.imports.convenience;
 let extensionPath = Me.path;
 
 // Settings
-const PACKAGES_THEME = 'theme';
 const PACKAGES_KEYWORD = 'keyword';
-const PACKAGES_DELAY_TIME = 'delay-time';
-const PACKAGES_RESULTS_ROWS = 'results-rows';
-const PACKAGES_DEFAULT_LANGUAGE = 'default-language';
-const PACKAGES_MAX_CHARS = 'max-chars';
-const PACKAGES_TITLE_FONT_SIZE = 'title-font-size';
-const PACKAGES_EXTRACT_FONT_SIZE = 'extract-font-size';
-const PACKAGES_RESULT_WIDTH = 'result-width';
-const PACKAGES_RESULT_HEIGHT = 'result-height';
-const PACKAGES_ENABLE_SHORTCUTS = 'enable-shortcuts';
-
-const Themes = {
-    LIGHT: 0,
-    DARK: 1
-};
 
 function init() {
 }
@@ -137,7 +122,6 @@ const packagesSearchProviderPrefsWidget = new GObject.Class({
         this._settings = Convenience.getSettings();
 
         let main_page = this._get_main_page();
-        let theme_page = this._get_theme_page();
 
         let notebook = new Gtk.Notebook({
             margin_left: 5,
@@ -148,7 +132,6 @@ const packagesSearchProviderPrefsWidget = new GObject.Class({
         });
 
         notebook.append_page(main_page.page, main_page.label);
-        notebook.append_page(theme_page.page, theme_page.label);
 
         this.add(notebook);
     },
@@ -163,116 +146,6 @@ const packagesSearchProviderPrefsWidget = new GObject.Class({
         let keyword = page.addEntry(
             "Keyword:",
             PACKAGES_KEYWORD
-        );
-
-        // default language
-        let default_language = page.addEntry(
-            "Default language:",
-            PACKAGES_DEFAULT_LANGUAGE
-        );
-
-        // delay time
-        let delay = page.addSpin('Delay time(ms):', PACKAGES_DELAY_TIME, {
-            lower: 100,
-            upper: 5000,
-            step_increment: 100
-        });
-
-        // max chars
-        let max_chars = page.addSpin('Max chars:', PACKAGES_MAX_CHARS, {
-            lower: 50,
-            upper: 2000,
-            step_increment: 50
-        });
-
-        let result = {
-            label: page_label,
-            page: page
-        };
-        return result;
-    },
-
-    _get_theme_page: function() {
-        let page_label = new Gtk.Label({
-            label: 'Theme'
-        });
-        let page = new packagesPrefsGrid();
-
-        // theme
-        let item = new Gtk.ComboBoxText();
-
-        for(let theme in Themes) {
-            if(Themes.hasOwnProperty(theme)) {
-                let label =
-                    theme[0].toUpperCase() + theme.substring(1).toLowerCase();
-                item.insert(-1, Themes[theme].toString(), label);
-            }
-        }
-
-        // item.set_active_id(this._settings.get_enum(PACKAGES_THEME)).toString();
-        item.set_active_id(
-            this._settings.get_enum(PACKAGES_THEME) == 0 ? '0' : '1'
-        );
-        item.connect('changed', Lang.bind(this, function (combo) {
-            let value = parseInt(combo.get_active_id(), 10);
-
-            if (value !== undefined &&
-                this._settings.get_enum(PACKAGES_THEME) !== value) {
-                this._settings.set_enum(PACKAGES_THEME, value);
-            }
-        }));
-        page.addRow("Theme:", item);
-
-        // title font size
-        let title_font_size = page.addSpin(
-            'Title font size(px):',
-            PACKAGES_TITLE_FONT_SIZE, {
-                lower: 1,
-                upper: 40,
-                step_increment: 1
-            }
-        );
-
-        // extract font size
-        let extract_font_size = page.addSpin(
-            'Extract font size(px):',
-            PACKAGES_EXTRACT_FONT_SIZE, {
-                lower: 1,
-                upper: 20,
-                step_increment: 1
-            }
-        );
-
-        // results rows
-        let results_rows = page.addSpin(
-            'Max results rows:',
-            PACKAGES_RESULTS_ROWS, {
-                lower: 1,
-                upper: 10,
-                step_increment: 1
-            }
-        );
-
-        // requires restart
-        page.addItem(new Gtk.Label({label: 'Requires restart shell'}));
-        // result width
-        page._result_width = page.addSpin(
-            'Width(px):',
-            PACKAGES_RESULT_WIDTH, {
-                lower: 100,
-                upper: 1500,
-                step_increment: 10
-            }
-        );
-
-        // result height
-        page._result_height = page.addSpin(
-            'Height(px):',
-            PACKAGES_RESULT_HEIGHT, {
-                lower: 50,
-                upper: 1500,
-                step_increment: 10
-            }
         );
 
         let result = {

@@ -1,13 +1,1 @@
-{
-  "description": "To search Fedora Packages enter the keyword (default is 'f') and your request after a space.\nExample 1: 'f gnome' - look for the 'gnome' in Fedora Packages.",
-  "name": "Fedora Packages Search Provider",
-  "shell-version": [
-    "3.4",
-    "3.6",
-  ],
-  "url": "https://github.com/ralphbean/gnome-shell-search-fedora-packages",
-  "uuid": "fedora_packages_search_provider@ralph.fedoraproject.org",
-  "settings-schema": "org.gnome.shell.extensions.fedora-packages-search-provider",
-  "dev-version": "0.1",
-  "version": 1,
-}
+{"shell-version": ["3.6.3.1"], "uuid": "fedora-packages-search-provider@threebean.org", "name": "Fedora Packages Search Provider", "description": "Search the Fedora Packages webapp from the gnome shell", "settings-schema": "org.fedoraproject.gnome.shell.extensions.packages-search-provider"}
