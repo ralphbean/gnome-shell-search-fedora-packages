@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extensions">
 
-  <enum id='org.gnome.shell.extensions.wikipedia-search-provider.Themes'>
+  <enum id='org.gnome.shell.extensions.packages-search-provider.Themes'>
     <value value='0' nick='light'/>
     <value value='1' nick='dark'/>
   </enum>
 
-  <schema path="/org/gnome/shell/extensions/wikipedia-search-provider/" id="org.gnome.shell.extensions.wikipedia-search-provider">
+  <schema path="/org/gnome/shell/extensions/packages-search-provider/" id="org.gnome.shell.extensions.packages-search-provider">
 
     <key type="b" name="enable-shortcuts">
         <default>true</default>
-    </key>
-
-    <key type="as" name="search-from-clipboard">
-      <default><![CDATA[['<Super>W']]]></default>
-    </key>
-    <key type="as" name="search-from-primary-selection">
-      <default><![CDATA[['<Super><Shift>W']]]></default>
     </key>
 
     <key type="s" name="keyword">
@@ -63,7 +56,7 @@
       <description>Max results rows.</description>
     </key>
 
-    <key name="theme" enum="org.gnome.shell.extensions.wikipedia-search-provider.Themes">
+    <key name="theme" enum="org.gnome.shell.extensions.packages-search-provider.Themes">
       <default>"light"</default>
       <summary>Theme</summary>
       <description>Theme</description>
