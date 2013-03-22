@@ -130,7 +130,10 @@ class SearchFedoraPackagesService(dbus.service.Object):
             self._icon_cache[filename[:-4]] = self._icon_cache_dir + filename
 
     def _basic_search(self, terms):
+        keyword = str(self.settings.get_value('keyword'))
         term = ''.join(terms).strip().encode('utf-8')
+        if not term.startswith(keyword):
+            return []
 
         key = hashlib.md5(term).hexdigest()
         location = self._search_cache_dir + key[0:2] + "/" + key[2:4]
