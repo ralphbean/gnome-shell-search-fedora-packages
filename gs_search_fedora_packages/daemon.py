@@ -30,6 +30,7 @@ import dbus
 import dbus.glib
 import dbus.service
 import os
+import time
 import hashlib
 import shelve
 import pkgwat.api
@@ -54,6 +55,8 @@ class SearchFedoraPackagesService(dbus.service.Object):
     http_prefix = "https://apps.fedoraproject.org/packages"
     icon_tmpl = "https://apps.fedoraproject.org/packages/images/icons/%s.png"
 
+    # 1 day
+    expiry = 86400
     _icon_cache = {}
     _cache_dir = os.path.expanduser("~/.cache/search-fedora-packages/")
     _icon_cache_dir = os.path.expanduser(_cache_dir + "icons/")
@@ -105,6 +108,8 @@ class SearchFedoraPackagesService(dbus.service.Object):
     def iconify(self, filetoken):
         filename = self._icon_cache.get(filetoken)
 
+        # TODO -- can this be sped up with deferreds?
+
         # If its not in our in-memory cache, then we assume it is also not on
         # disk in the _icon_cache_dir.  Grab it, save it to the fs, and cache
         # the association.
@@ -136,12 +141,13 @@ class SearchFedoraPackagesService(dbus.service.Object):
         d = shelve.open(location + "/" + key[4:6])
 
         try:
-            if not term in d:
+            created, rows = d.get('term', (0, []))
+            if time.time() - created > self.expiry:
                 response = pkgwat.api.search(term)
                 rows = response.get('rows', [])
                 rows = [row.get('name') + ":" + row.get('icon')
                         for row in rows]
-                d[term] = rows
+                d[term] = (time.time(), rows)
             return d[term]
         finally:
             d.close()
