@@ -124,7 +124,7 @@ class SearchFedoraPackagesService(dbus.service.Object):
 
     def _initialize_icon_cache(self):
         if not os.path.isdir(self._icon_cache_dir):
-            os.mkdir(self._icon_cache_dir)
+            os.makedirs(self._icon_cache_dir)
 
         # Populate our in-memory cache from the file system
         for filename in os.listdir(self._icon_cache_dir):
