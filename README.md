@@ -4,14 +4,11 @@ gnome-shell-search-fedora-packages
 Search the [Fedora Packages webapp](https://apps.fedoraproject.org/packages)
 from the gnome-shell.
 
-Installing
-----------
+RETIRED
+-------
 
-Only available for gnome-shell-3.6 and later (Fedora 18 and later).
-
-```
-yum -y install gnome-shell-search-fedora-packages
-```
+This project is retired.  If you would like to fork it and revive it, you are
+more than welcome to.
 
 Tools
 -----
